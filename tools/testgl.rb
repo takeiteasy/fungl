@@ -362,21 +362,7 @@ puts <<SOURCE
 #define NULL ((void*)0)
 #endif
 
-static void PushCommand(cwcglCommandType type, void *data);
-
 SOURCE
-
-# Define extern implementations
-puts "#define X(T, N) T __##N = NULL;"
-$functions.each do |k, v|
-  maj, min = k.split '.'
-  puts "#if CWCGL_VERSION >= GL_VERSION_#{maj}_#{min}"
-  puts "GL_FUNCTIONS_#{maj}_#{min}"
-  puts "#endif"
-end
-puts "#undef X", ""
-
-PrintGLVersionsMacro()
 
 puts "typedef enum {"
 features.each do |f|
@@ -395,7 +381,7 @@ features.each do |f|
   end
   puts "#endif"
 end
-puts "} cwcglCommandType;", ""
+puts "} cwcglCommandType;", "", "static void PushCommand(cwcglCommandType type, void *data);", ""
 
 features.each do |f|
   puts "#if CWCGL_VERSION >= #{f.attr 'name'}"
@@ -412,12 +398,12 @@ features.each do |f|
           end
           puts "} cwc#{name}Data;", ""
           puts "#{ret} #{name}(#{commands[name][:params].join ', '}) {"
-          puts "\tcwc#{name}Data *data = malloc(sizeof(cwc#{name}Data));"
+          puts "\tcwc#{name}Data *GLDATA = malloc(sizeof(cwc#{name}Data));"
           commands[name][:params].each do |p|
             pname = p.split[-1]
-            puts "\tdata->#{pname} = #{pname};"
+            puts "\tGLDATA->#{pname} = #{pname};"
           end
-          puts "\tPushCommand(cwc#{name}Command, data);"
+          puts "\tPushCommand(cwc#{name}Command, GLDATA);"
           puts "}", ""
         else
           params = commands[name][:params].join ', '
@@ -427,7 +413,7 @@ features.each do |f|
               else
                 commands[name][:params].map { |p| p.split(' ')[-1] }.join(', ')
               end
-          puts "\treturn __#{name}(#{p});"
+          puts "\treturn __#{name}(#{p == 'void' ? '' : p});"
           puts "}", ""
         end
       end
@@ -457,9 +443,9 @@ static void PushCommand(cwcglCommandType type, void *data) {
         cwcgl.head = command;
         cwcgl.tail = command;
     } else {
-        cwcglCommand *tmp = cwcgl.tail;
+        cwcglCommandNode *tmp = cwcgl.tail;
         cwcgl.tail->next = command;
-        cwcgl.tail = command
+        cwcgl.tail = command;
     }
 }
 
@@ -476,9 +462,9 @@ features.each do |f|
       if fff.to_s =~ /^<command/
         if commands[name][:result] == "void"
           puts "\t\tcase cwc#{name}Command: {"
-          puts "\t\t\tcwc#{name}Data *data = command->data;"
-          params = commands[name][:params].map { |p| p.split(" ")[-1] }.join(", ")
-          puts "\t\t\t__#{name}(#{params});"
+          puts "\t\t\tcwc#{name}Data *GLDATA = command->data;"
+          params = commands[name][:params].map { |p| "GLDATA->" + p.split(" ")[-1] }.join(", ")
+          puts "\t\t\t__#{name}(#{params == 'GLDATA->void' ? '' : params});"
           puts "\t\t\tbreak;"
           puts "\t\t}"
         end

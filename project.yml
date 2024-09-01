@@ -1,0 +1,39 @@
+name: fungl
+
+options:
+  bundleIdPrefix: io.github.takeiteasy
+  createIntermediateGroups: true
+  deploymentTarget:
+    macOS: "14.0"
+
+settings:
+  GCC_C_LANGUAGE_STANDARD: c11
+  CLANG_WARN_DOCUMENTATION_COMMENTS: false
+
+targets:
+  fungl:
+    type: library.dynamic
+    platform: macOS
+    sources:
+      - path: fungl/
+      - path: tools
+        type: folder
+      - path: README.md
+        type: folder
+      - path: project.yml
+        type: folder
+    dependencies:
+      - sdk: /opt/homebrew/lib/libglfw.dylib
+    settings:
+      HEADER_SEARCH_PATHS: [/opt/homebrew/include, $(PROJECT_DIR)/src]
+      LIBRARY_SEARCH_PATHS: [/opt/homebrew/lib]
+      OTHER_CFLAGS: []
+  fungl-test:
+    type: tool
+    platform: macOS
+    sources:
+      - path: tests/
+    dependencies:
+      - target: fungl
+    settings:
+      HEADER_SEARCH_PATHS: [$(PROJECT_DIR)/fungl]
