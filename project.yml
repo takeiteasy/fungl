@@ -22,12 +22,16 @@ targets:
         type: folder
       - path: project.yml
         type: folder
+      - path: Makefile
+        type: folder
+      - path: deps
+        type: folder
     dependencies:
-      - sdk: /opt/homebrew/lib/libglfw.dylib
+      - sdk: libglfw.dylib
     settings:
-      HEADER_SEARCH_PATHS: [/opt/homebrew/include, $(PROJECT_DIR)/src]
+      HEADER_SEARCH_PATHS: [/opt/homebrew/include, $(PROJECT_DIR)/src, $(PROJECT_DIR)/deps]
       LIBRARY_SEARCH_PATHS: [/opt/homebrew/lib]
-      OTHER_CFLAGS: []
+      OTHER_CFLAGS: [-DFUNGL_VERSION=3020, -fenable-matrix]
   fungl-test:
     type: tool
     platform: macOS
@@ -36,4 +40,5 @@ targets:
     dependencies:
       - target: fungl
     settings:
-      HEADER_SEARCH_PATHS: [$(PROJECT_DIR)/fungl]
+      HEADER_SEARCH_PATHS: [$(PROJECT_DIR)/fungl, $(PROJECT_DIR)/deps]
+      OTHER_CFLAGS: [-DFUNGL_VERSION=3020, -fenable-matrix]

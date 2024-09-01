@@ -1,0 +1,6 @@
+[submodule "deps/bla"]
+	path = deps/bla
+	url = git@github.com:takeiteasy/bla.git
+[submodule "deps/ez"]
+	path = deps/ez
+	url = git@github.com:takeiteasy/ez.git
