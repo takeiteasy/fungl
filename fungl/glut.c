@@ -135,6 +135,7 @@ void glutMainLoop(void) {
     glfwGetWindowSize(glfw.window, &width_window, &height_window);
     glfw.reshape_callback(width_window, height_window);
     
+    // TODO: Properly mimic glut's loop
     while (!glfwWindowShouldClose(glfw.window)) {
         glfw.display_callback();
         glfwSwapBuffers(glfw.window);

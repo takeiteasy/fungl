@@ -1,4 +1,4 @@
-/* glc.h -- https://github.com/takeiteasy/fungl
+/* glm.c -- https://github.com/takeiteasy/fungl
  
  The MIT License (MIT)
 

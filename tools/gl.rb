@@ -316,7 +316,7 @@ end
 puts "#undef X", ""
 
 puts <<FOOTER
-EXPORT int InitOpenGL(void);
+EXPORT int glInit(void);
 
 #ifdef __cplusplus
 }
@@ -500,7 +500,7 @@ static void* LoadGLProc(const char *namez) {
     if (!(__##N = (T)LoadGLProc(#N))) \\
         failures++;
 
-int InitOpenGL(void) {
+int glInit(void) {
     int failures = 0;
     if (LoadGLLibrary()) {
 LOADER
