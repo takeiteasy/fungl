@@ -29,7 +29,7 @@ targets:
     dependencies:
       - sdk: libglfw.dylib
     settings:
-      HEADER_SEARCH_PATHS: [/opt/homebrew/include, $(PROJECT_DIR)/src, $(PROJECT_DIR)/deps]
+      HEADER_SEARCH_PATHS: [/opt/homebrew/include, $(PROJECT_DIR)/src]
       LIBRARY_SEARCH_PATHS: [/opt/homebrew/lib]
       OTHER_CFLAGS: [-DFUNGL_VERSION=3020, -fenable-matrix]
   fungl-test:
@@ -40,5 +40,5 @@ targets:
     dependencies:
       - target: fungl
     settings:
-      HEADER_SEARCH_PATHS: [$(PROJECT_DIR)/fungl, $(PROJECT_DIR)/deps]
+      HEADER_SEARCH_PATHS: [$(PROJECT_DIR)/fungl]
       OTHER_CFLAGS: [-DFUNGL_VERSION=3020, -fenable-matrix]

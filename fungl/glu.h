@@ -34,7 +34,7 @@ extern "C" {
 #error "glu.h requires FUNGL_VERSION >= GL_VERSION_3_2"
 #endif
 #include "gl.h"
-#include "bla/bla/bla.h"
+#include "glm.h"
 
 // Texture parameters (equivalent to OpenGL defines)
 #define GLU_TEXTURE_WRAP_S                       0x2802                         // GL_TEXTURE_WRAP_S

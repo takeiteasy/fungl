@@ -25,13 +25,11 @@
 */
 
 #include "glu.h"
-#define BLA_IMPLEMENTATION
-#include "bla/bla/bla.h"
 #define QOI_IMPLEMENTATION
-#include "qoi.h"
+#include "deps/qoi.h"
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_NO_GIF
-#include "stb_image.h"
+#include "deps/stb_image.h"
 
 #define DEFAULT_MAX_MATRIX_STACK 32
 #ifndef MAX_MATRIX_STACK
@@ -159,7 +157,7 @@ void gluTranslatef(float x, float y, float z)  {
 }
 
 void gluRotatef(float angle, float x, float y, float z)  {
-    mat4 rotation = mat4_rotate(angle, Vec3(x, y, z));
+    mat4 rotation = mat4_rotate(Vec3(x, y, z), angle);
     mul_current_matrix(&rotation);
 }
 
