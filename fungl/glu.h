@@ -645,6 +645,6 @@ void gluLoadDrawCube(void); // Load and draw a cube
 void gluLoadDrawQuad(void); // Load and draw a quad
 
 #if defined(__cplusplus)
-    }
+}
 #endif
 #endif /* glu_h */
