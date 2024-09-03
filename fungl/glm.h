@@ -212,11 +212,12 @@ quat quat_transform(quat q, mat4 mat);
 
 mat4 mat4_invert(mat4 mat);
 mat4 mat4_translate(vec3 v);
-mat4 mat4_rotate(vec3 axis, float angle);
+mat4 mat4_rotate(float angle, vec3 axis);
 mat4 mat4_scale(vec3 scale);
 mat4 frustum(float left, float right, float bottom, float top, float near, float far);
 mat4 perspective(float fovY, float aspect, float nearPlane, float farPlane);
 mat4 ortho(float left, float right, float bottom, float top, float nearPlane, float farPlane);
+mat4 look_at(vec3 eye, vec3 target, vec3 up);
 #endif
 
 enum glm_easing_fn {

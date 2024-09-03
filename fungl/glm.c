@@ -555,7 +555,7 @@ mat4 mat4_translate(vec3 v) {
     return result;
 }
 
-mat4 mat4_rotate(vec3 axis, float angle) {
+mat4 mat4_rotate(float angle, vec3 axis) {
     vec3 a = vec3_length_sqr(axis);
     float s = sinf(angle);
     float c = cosf(angle);
@@ -635,7 +635,7 @@ mat4 ortho(float left, float right, float bottom, float top, float nearPlane, fl
     return result;
 }
 
-mat4 lookat(vec3 eye, vec3 target, vec3 up) {
+mat4 look_at(vec3 eye, vec3 target, vec3 up) {
     vec3 vz = vec3_normalize(eye - target);
     vec3 vx = vec3_normalize(vec3_cross(up, vz));
     vec3 vy = vec3_cross(vz, vx);
