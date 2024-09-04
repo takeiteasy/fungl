@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 =begin
 gl.rb -- https://github.com/takeiteasy/fungl
 

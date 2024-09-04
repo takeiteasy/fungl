@@ -1,5 +1,14 @@
-/* glm.c -- https://github.com/takeiteasy/fungl
- 
+/* glm.c -- Basic Linear Algebra library
+ https://github.com/takeiteasy/fungl
+
+ Functionality relies on Clang + GCC extensions.
+ When building `-fenable-matrix` for Matrix support.
+ To disable Matrix support define `GLM_NO_MATRICES`
+
+ Acknowledgements:
+ - A lot of this was hand translated from raylib's raymath.h header
+ https://github.com/raysan5/raylib/blob/master/src/raymath.h (Zlib)
+
  The MIT License (MIT)
 
  Copyright (c) 2022 George Watson
@@ -40,6 +49,27 @@
             mat[i][i] = 1.f;                                \
         return mat;                                         \
     }                                                       \
+    bool mat##N##_is_identity(mat##N mat)                   \
+    {                                                       \
+        for (int y = 0; y < N; y++)                         \
+            for (int x = 0; x < N; x++)                     \
+                if (x == y) {                               \
+                    if (mat[y][x] != 1.f)                   \
+                        return false;                       \
+                } else {                                    \
+                    if (mat[y][x] != 0.f)                   \
+                        return false;                       \
+                }                                           \
+        return true;                                        \
+    }                                                       \
+    bool mat##N##_is_zero(mat##N mat)                       \
+    {                                                       \
+        for (int y = 0; y < N; y++)                         \
+            for (int x = 0; x < N; x++)                     \
+                if (mat[y][x] != 0.f)                       \
+                    return false;                           \
+        return true;                                        \
+    }                                                       \
     float mat##N##_trace(mat##N mat)                        \
     {                                                       \
         float result = 0.f;                                 \
@@ -77,23 +107,17 @@ __GLM_TYPES
 #undef X
 #endif // GLM_NO_MATRICES
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wvarargs"
 #define X(N)                                                  \
-    vec##N Vec##N(float x, ...)                               \
-    {                                                         \
-        va_list args;                                         \
-        va_start(args, N - 1);                                \
-        vec##N v;                                             \
-        v[0] = x;                                             \
-        for (int i = 0; i < N - 1; i++)                       \
-            v[i + 1] = (float)va_arg(args, double);           \
-        va_end(args);                                         \
-        return v;                                             \
-    }                                                         \
     vec##N vec##N##_zero(void)                                \
     {                                                         \
         return (vec##N){0};                                   \
+    }                                                         \
+    bool vec##N##_is_zero(vec##N vec)                         \
+    {                                                         \
+        for (int i = 0; i < N; i++)                           \
+            if (vec[i] != 0.f)                                \
+                return false;                                 \
+                return true;                                  \
     }                                                         \
     float vec##N##_sum(vec##N vec)                            \
     {                                                         \
@@ -106,7 +130,7 @@ __GLM_TYPES
     {                                                         \
         int result = 1;                                       \
         for (int i = 0; i < N; i++)                           \
-            if (!FLOAT_CMP(a[i], b[i]))                       \
+            if (!float_cmp(a[i], b[i]))                       \
                 return 0;                                     \
         return result;                                        \
     }                                                         \
@@ -151,7 +175,6 @@ __GLM_TYPES
     }
 __GLM_TYPES
 #undef X
-#pragma clang diagnostic pop
 
 #ifndef GLM_NO_PRINT
 #ifndef GLM_NO_MATRICES
@@ -181,25 +204,6 @@ __GLM_TYPES
 __GLM_TYPES
 #undef X
 #endif // GLM_NO_MATRICES
-
-#ifndef GLM_NO_GENERICS
-#ifndef GLM_NO_MATRICES
-#define glm_print(data) _Generic((data), \
-    vec2: vec2_print,                    \
-    vec3: vec3_print,                    \
-    vec4: vec4_print,                    \
-    mat2: mat2_print,                    \
-    mat3: mat3_print,                    \
-    mat4: mat4_print,                    \
-    default: printf("Unsupported type\n"))(data)
-#else
-#define glm_print(data) _Generic((data), \
-    vec2: vec2_print,                    \
-    vec3: vec3_print,                    \
-    vec4: vec4_print,                    \
-    default: printf("Unsupported type\n"))(data)
-#endif // GLM_NO_MATRICES
-#endif // GLM_NO_GENERICS
 #endif // GLM_NO_PRINT
 
 float vec2_angle(vec2 v1, vec2 v2) {
@@ -555,7 +559,7 @@ mat4 mat4_translate(vec3 v) {
     return result;
 }
 
-mat4 mat4_rotate(float angle, vec3 axis) {
+mat4 mat4_rotate(vec3 axis, float angle) {
     vec3 a = vec3_length_sqr(axis);
     float s = sinf(angle);
     float c = cosf(angle);
@@ -941,4 +945,16 @@ float easing(enum glm_easing_fn fn, enum glm_easing_t type, float t, float b, fl
                     return ease_elastic_inout(t, b, c, d);
             };
     }
+}
+
+bool float_cmp(float a, float b) {
+    return fabsf(a - b) <= EPSILON * fmaxf(1.f, fmaxf(fabsf(a), fabsf(b)));
+}
+
+bool double_cmp(double a, double b) {
+    return fabs(a - b) <= EPSILON * fmax(1.f, fmax(fabs(a), fabs(b)));
+}
+
+float remap(float x, float in_min, float in_max, float out_min, float out_max) {
+    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
