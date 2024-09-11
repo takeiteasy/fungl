@@ -25,7 +25,8 @@ end
 url = 'https://github.com/takeiteasy/bla/raw/master/bla/bla.h'
 content = download_file(url)
 raw_lines = content.split("\n")
-raw_lines[1] = raw_lines[1].gsub("bla", "fungl")
+raw_lines[0] = raw_lines[0].gsub("/bla", "/fungl")
+raw_lines[2] = " fungl puts the fun back into OpenGL"
 STATE_IN_COMMENT = 0
 STATE_IN_HEADER = 1
 STATE_IN_SOURCE = 2
